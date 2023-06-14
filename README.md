@@ -11,6 +11,7 @@ Web Service Pembanding Barang, Stok, dan Harga Antar Online Shop
 
 ### Deskripsi API:
 ==================
+
 Web Service ini bertujuan untuk memudahkan pengguna API untuk mencari barang di berbagai Online Shop. Target pengguna API ini adalah developer yang akan membuat sebuah aplikasi yang membutuhkan data barang dari berbagai sumber. Dengan menggunakan API ini, pengguna dapat mendapatkan nama, harga, toko, stock, dan informasi lainnya yang berhubungan dengan barang tersebut di sebuah Online Shop. Terdapat 2 versi saat menggunakan API ini, yaitu versi gratis dan berbayar. Dengan versi gratis, informasi yang didapatkan dari API ini terbatas, seperti hanya nama, toko dan harga saja. Tetapi dengan versi berbayar, maka akan mendapatkan informasi yang lebih lengkap, seperti diskon, dan voucher.
 
 Developer adalah orang yang akan menggunakan API kita dalam aplikasi mereka.
