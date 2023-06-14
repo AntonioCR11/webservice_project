@@ -31,7 +31,7 @@ Contoh aplikasi yang dapat menggunakan API ini:
 
 
 ### Business Model:
-===============
+===================
 - Subscription Model:
 	- Rp. 30k/bulan
 	- Rp. 50k/3 bulan
@@ -39,14 +39,16 @@ Contoh aplikasi yang dapat menggunakan API ini:
 	- Rp. 150k/tahun
 
 ### System Scope:
-=============
+=================
+
 Developer:
 - Upload File
 	- Foto KTP
 
 
 ### Use Case:
-=========
+=============
+
 Developer:
 1. Login Akun Developer
 	- Login akun developer untuk melihat paduan menggunakan API webservice ini.
@@ -90,7 +92,8 @@ Customer:
 
 
 ### Endpoint:
-=========
+=============
+
 Developer:
 1. [POST]	Login
 2. [POST]	Register
