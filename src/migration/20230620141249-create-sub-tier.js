@@ -9,23 +9,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id: {
-        type: Sequelize.INTEGER
-      },
       price: {
         type: Sequelize.INTEGER
       },
       duration: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      },
+      deleted_at: Sequelize.DATE
     });
   },
   async down(queryInterface, Sequelize) {

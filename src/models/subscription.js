@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Subscription.belongsTo(models.User, { foreignKey: 'user_id' });
+      Subscription.hasOne(models.Sub_tier, { foreignKey: 'tier_id' });
     }
   }
   Subscription.init({
@@ -23,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Subscription',
+    underscored: true,
   });
   return Subscription;
 };

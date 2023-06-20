@@ -2,24 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Likes', {
+    await queryInterface.createTable('Subscriptions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.BIGINT.UNSIGNED
       },
-      dev_user_id: {
-        type: Sequelize.BIGINT.UNSIGNED,
-        allowNull: false,
-        references: {
-          model: 'Dev_users',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
-      comment_id: {
+      user_id: {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -29,17 +19,32 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      created_at: {
+      tier_id: {
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
-        type: Sequelize.DATE
+        references: {
+          model: 'Subscriptions',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
-      updated_at: {
+      price: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        type: Sequelize.DATE
+      },
+      duration: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      transaction_status: {
+        type: Sequelize.STRING,
+        allowNull: false,
       }
     });
+
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Likes');
+    await queryInterface.dropTable('Subscriptions');
   }
 };

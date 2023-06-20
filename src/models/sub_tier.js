@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Sub_tier.belongsTo(models.Subscription, { foreignKey: 'tier_id' });
     }
   }
   Sub_tier.init({
@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Sub_tier',
+    underscored: true,
   });
   return Sub_tier;
 };
