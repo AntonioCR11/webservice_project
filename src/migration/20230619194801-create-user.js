@@ -9,10 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.BIGINT.UNSIGNED
       },
-      id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
       username: {
         type: Sequelize.STRING,
         allowNull: false,
