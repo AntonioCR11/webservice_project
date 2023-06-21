@@ -20,10 +20,10 @@ const replyController = require(path.join(__dirname, "..", "controllers", "reply
 // Comment
 router.post("/$", upload.single("image"), commentController.createComment);
 router.get("/$", commentController.getComments);
+router.get("/search$", commentController.searchComment);
 router.get("/:commentId", commentController.getSpecificComment);
 router.put("/:commentId", upload.single("image"), commentController.updateComment);
 router.delete("/:commentId", commentController.deleteComment);
-router.get("/search", commentController.searchComment);
 // Reply
 router.get("/:commentId/replies", replyController.getCommentReplies);
 router.put("/:commentId/replies/:replyId", replyController.updateCommentReplies);
