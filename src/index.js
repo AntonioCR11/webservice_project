@@ -3,7 +3,6 @@ var app = express();
 const port = 3000;
 var bodyParser = require('body-parser');
 const globalRouter = require('./routes/routes');
-// const Associations = require("./models/association")();
 
 const db = require('./databases/connection');
 
@@ -29,7 +28,7 @@ const initApp = async () => {
     }
 }
 initApp();
-app.post("/register", userFunction.addUser);
+app.post("/api/users/register", userFunction.addUser);
 
 module.exports = app;
 

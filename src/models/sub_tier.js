@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   SubTier.init({
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
-      primaryKey: false,
+      primaryKey: true,
       autoIncrement: true,
     },
     price: {

@@ -1,20 +1,10 @@
-var express = require('express')
-var app = express()
-var bodyParser = require('body-parser')
 const Sequelize = require('sequelize');
 var Joi = require('joi').extend(require('@joi/date'));
 const jwt = require("jsonwebtoken");
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
-app.use(bodyParser.json())
 
-const conn = require('../databases/connection');
-const sequelize = conn;
-
-mod_users = require("../models/user")(sequelize, Sequelize.DataTypes);
-
-sequelize.sync();
+const db = require("../models");
+const sequelize = db.sequelize;
+const mod_User = db.User;
 async function addUser(req, res,next) {
     console.log("test");
 }
