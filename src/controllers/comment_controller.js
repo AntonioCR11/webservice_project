@@ -2,6 +2,7 @@ const path = require("path");
 const joi = require("joi");
 const { Op } = require("sequelize");
 const fs = require("fs");
+const PaginationUtil = require("../utils/pagination");
 
 const db = require(path.join(__dirname, "..", "models"));
 // const PaginationUtil = require(path.join(__dirname, "..", "utils", "pagination"))
@@ -94,11 +95,15 @@ const commentController = {
      * @returns A response object with a json body containing a max page for the pagination, as well as the list of comments and replies.
      */
     getComments: async (req, res) => {
-        // TODO: Get a list of paginated comments.
+        const pagination = await PaginationUtil.getPaginatedModels(req, {
+            where: {
+                parent_id: null
+            }
+        }, db.Comment);
 
         return res.status(200).send({
-            maxPage: 1,
-            comments: []
+            maxPage: pagination.maxPage,
+            comments: pagination.models
         });
     },
     
@@ -110,9 +115,21 @@ const commentController = {
      * @returns A response object with a json body containing the model of the comment.
      */
     getSpecificComment: async (req, res) => {
-        // TODO: Get a comment with the specified id.
+        const { commentId } = req.params;
 
-        return res.status(200).send();
+        const validateSchema = joi.object({
+            commentId: joi.number().required()
+        });
+        const validateResult = validateSchema.validate(req.params);
+        if (validateResult.error) return res.status(422).send({ message: "Comment id is not valid!" });
+
+        const targetedComment = await db.Comment.findByPk(commentId);
+        if (targetedComment === null) return res.status(422).send({
+            statusCode: 422,
+            message: "Comment not found!"
+        });
+
+        return res.status(200).send(targetedComment);
     },
     
     /**
@@ -201,9 +218,23 @@ const commentController = {
      * @returns A response object with a json body containing the soft deleted model of the comment.
      */
     deleteComment: async (req, res) => {
-        // TODO: Soft delete a comment.
+        const { commentId } = req.params;
 
-        return res.status(200).send();
+        const validateSchema = joi.object({
+            commentId: joi.number().required()
+        });
+        const validateResult = validateSchema.validate(req.params);
+        if (validateResult.error) return res.status(422).send({ message: "Comment id is not valid!" });
+
+        const targetedComment = await db.Comment.findByPk(commentId);
+        if (targetedComment === null) return res.status(422).send({
+            statusCode: 422,
+            message: "Comment not found!"
+        });
+
+        await targetedComment.destroy();
+
+        return res.status(200).send(targetedComment);
     },
     
     /**
@@ -217,14 +248,22 @@ const commentController = {
      * 
      * @param {Express.Request} req The request object containing the user request.
      * @param {Express.Response} res The response object that will be returned to the user.
-     * @returns A response object with a json body containing the soft deleted model of the comment.
+     * @returns A response object with a json body containing a list o paginated keywords
      */
     searchComment: async (req, res) => {
-        // TODO: Get a list of paginated searched comments.
+        const { keyword } = req.query;
+
+        const pagination = await PaginationUtil.getPaginatedModels(req, {
+            where: {
+                "body": {
+                    [Op.like]: `%${keyword}%`
+                }
+            },
+        }, db.Comment);
 
         return res.status(200).send({
-            maxPage: 1,
-            comments: []
+            maxPage: pagination.maxPage,
+            comments: pagination.models
         });
     }
 };

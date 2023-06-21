@@ -19,7 +19,7 @@ const generateWordCloud = async(req,res)=>{
     let {comment} = req.body;
     let rapidApiKey = req.get("X-RapidAPI-Key");
     let rapidApiHost =  req.get("X-RapidAPI-Host");
-    console.log(rapidApiKey);
+    
     let getdata = await axios.post(
         "https://openai80.p.rapidapi.com/chat/completions",
         {
