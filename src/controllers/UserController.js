@@ -6,6 +6,9 @@ const conn = require("../databases/connection");
 const sequelize = conn;
 
 mod_users = require('../models/user')(sequelize, Sequelize.DataTypes);
+mod_dev_users = require('../models/dev_user')(sequelize, Sequelize.DataTypes);
+mod_comments = require('../models/comment')(sequelize, Sequelize.DataTypes);
+mod_likes = require('../models/like')(sequelize, Sequelize.DataTypes);
 
 sequelize.sync();
 
@@ -53,17 +56,17 @@ const UserController = {
             password: req.body.password,
             email: req.body.email,
             gender: req.body.gender,
-            apikey : randomString
+            apikey: randomString
         });
         var userSize = await mod_users.count();
         const newTrialSubs = db.Subscription.build({
-            user_id : userSize,
-            tier_id : 1,
-            price : 0,
-            duration : 7,
-            start_date : new Date(Date.now()),
-            end_date : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            transaction_status : "completed"
+            user_id: userSize,
+            tier_id: 1,
+            price: 0,
+            duration: 7,
+            start_date: new Date(Date.now()),
+            end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            transaction_status: "completed"
         })
         await newTrialSubs.save();
         return res.status(201).send({
@@ -72,7 +75,7 @@ const UserController = {
                 username: req.body.username,
                 email: req.body.email,
             },
-            Additional : "Your trial subscription will end in " + new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            Additional: "Your trial subscription will end in " + new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
     },
     userLogin: async (req, res) => {
@@ -177,7 +180,7 @@ const UserController = {
 
         await mod_users.update(
             {
-                deleted_at: timestamp, 
+                deleted_at: timestamp,
             },
             {
                 where: {
@@ -193,17 +196,17 @@ const UserController = {
         });
     },
     subsTier: async (req, res) => {
-        const {tier_id} = req.body
-        if(tier_id==null){
+        const { tier_id } = req.body
+        if (tier_id == null) {
             return res.status(400).send({
                 message: "Tier id is null",
             });
         }
-        if(!req.header('x-auth-token')){
+        if (!req.header('x-auth-token')) {
             return res.status(400).send('Authentication required')
         }
-        else{
-            const userData = jwt.verify(req.header('x-auth-token'),JWT_KEY);
+        else {
+            const userData = jwt.verify(req.header('x-auth-token'), JWT_KEY);
             const userExist = await mod_users.findOne({
                 where: {
                     username: userData.username
@@ -225,67 +228,65 @@ const UserController = {
                 });
             }
             const balance = userExist.saldo - tierExist.price;
-                if(balance < 0){
-                    return res.status(400).send({
-                        message: "Insufficient balance",
+            if (balance < 0) {
+                return res.status(400).send({
+                    message: "Insufficient balance",
+                });
+            }
+            else {
+                await mod_users.update({
+                    saldo: balance
+                }, {
+                    where: {
+                        username: userData.username
+                    }
+                });
+                const subsExist = await db.Subscription.findOne({
+                    where: {
+                        user_id: userExist.id,
+                        transaction_status: "completed"
+                    }
+                });
+                if (subsExist) {
+                    subsExist.update({
+                        start_date: new Date(Date.now()),
+                        end_date: new Date(Date.now() + tierExist.duration * 24 * 60 * 60 * 1000),
+                        tier_id: tier_id,
+                        price: tierExist.price,
+                        duration: tierExist.duration,
                     });
                 }
-                else{
-                    await mod_users.update({
-                        saldo: balance
-                    }, {
-                        where: {
-                            username: userData.username
-                        }
-                    });
-                    const subsExist = await db.Subscription.findOne({
-                        where: {
-                            user_id: userExist.id,
-                            transaction_status: "completed"
-                        }
-                    });
-                    if (subsExist) {
-                        subsExist.update({
-                            start_date: new Date(Date.now()),
-                            end_date: new Date(Date.now() + tierExist.duration * 24 * 60 * 60 * 1000),
-                            tier_id: tier_id,
-                            price: tierExist.price,
-                            duration: tierExist.duration,
-                        });
-                    }
-                    else{
-                        const newSubs = db.Subscription.build({
-                            user_id : userExist.id,
-                            tier_id : tier_id,
-                            price : tierExist.price,
-                            duration : tierExist.duration,
-                            start_date : new Date(Date.now()),
-                            end_date : new Date(Date.now() + tierExist.duration * 24 * 60 * 60 * 1000),
-                            transaction_status : "completed"
-                        })
-                        await newSubs.save();
-                    }
-                    return res.status(200).send({
-                        message: "Subscription successful",
-                        body: {
-                            username: userData.username,
-                            tier_id: tier_id,
-                        }
-                    });
+                else {
+                    const newSubs = db.Subscription.build({
+                        user_id: userExist.id,
+                        tier_id: tier_id,
+                        price: tierExist.price,
+                        duration: tierExist.duration,
+                        start_date: new Date(Date.now()),
+                        end_date: new Date(Date.now() + tierExist.duration * 24 * 60 * 60 * 1000),
+                        transaction_status: "completed"
+                    })
+                    await newSubs.save();
                 }
-            
-                
+                return res.status(200).send({
+                    message: "Subscription successful",
+                    body: {
+                        username: userData.username,
+                        tier_id: tier_id,
+                    }
+                });
+            }
         }
     },
-    userTopup : async (req, res) => {
-        if(!req.header('x-auth-token')){
+    userTopup: async (req, res) => {
+        if (!req.header('x-auth-token')) {
             return res.status(400).send('Unauthorized');
         }
-        try{
+        try {
 
             let userdata = jwt.verify(req.header('x-auth-token'), JWT_KEY);
         }
-        catch(err){
+        catch (err) {
             return res.status(400).send('Invalid Token');
         }
         const schema = Joi.object({
@@ -328,6 +329,78 @@ const UserController = {
             body: {
                 username: req.body.username,
                 saldo: newBalance,
+            }
+        });
+    },
+    toggleLike : async (req, res) => {
+        var userExist = await mod_dev_users.findOne({
+            where: {
+                user_id: req.params.userId,
+                deleted_at: null
+            }
+        });
+        if (!userExist) {
+            return res.status(404).send({
+                message: "User not found",
+            });
+        }
+        var commentExist = await mod_comments.findOne({
+            where: {
+                id: req.body.comment_id,
+                deleted_at: null
+            }
+        });
+        if (!commentExist) {
+            return res.status(404).send({
+                message: "Comment not found",
+            });
+        }
+        var likeExist = await mod_likes.findOne({
+            where: {
+                dev_user_id: req.params.userId,
+                comment_id: req.body.comment_id,
+            }
+        });
+        if (likeExist) {
+            await mod_likes.destroy({
+                where: {
+                    dev_user_id: req.params.userId,
+                    comment_id: req.body.comment_id,
+                }
+            });
+            await mod_comments.update({
+                total_likes: commentExist.total_likes - 1,
+            }, {
+                where: {
+                    id: req.body.comment_id,
+                }
+            });
+            return res.status(200).send({
+                message: "Dislike successful",
+                body: {
+                    user_id: req.params.userId,
+                    comment_id: req.body.comment_id,
+                }
+            });
+        }
+        const newLike = mod_likes.build({
+            dev_user_id: req.params.userId,
+            comment_id: req.body.comment_id,
+        });
+        await newLike.save();
+        await mod_comments.update({
+            total_likes: commentExist.total_likes + 1,
+        }, {
+            where: {
+                id: req.body.comment_id,
+            }
+        });
+        
+        return res.status(200).send({
+            message: "Like successful",
+            body: {
+                user_id: req.params.userId,
+                comment_id: req.body.comment_id,
             }
         });
     },

@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Like',
     timestamps: true,
-    createdAt: true,
+    createdAt: "created_at",
     updatedAt: false,
     underscored: true,
   });

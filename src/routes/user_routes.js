@@ -9,5 +9,6 @@ router.post("/subs", UserController.subsTier);
 router.put("/:username", UserController.updateUser);
 router.delete("/:username", UserController.deleteUser);
 router.post("/topup", UserController.userTopup);
+router.post("/:userId/likes",UserController.toggleLike);
 
 module.exports = router;
