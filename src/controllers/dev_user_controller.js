@@ -4,7 +4,8 @@ const { Op } = require("sequelize");
 
 const db = require(path.join(__dirname, "..", "models"));
 const PaginationUtil = require(path.join(__dirname, "..", "utils", "pagination"))
-
+const JWT_KEY = 'KELOMPOK_OP';
+const jwt = require("jsonwebtoken");
 const devUserController = {
     /**
      * Get all comments that belongs to a certain dev user.
@@ -259,13 +260,25 @@ const devUserController = {
             statusCode: 422,
             message: secondValidateResult.error.message
         });
-
+        if(!req.header('x-auth-token')){
+            return res.status(400).send('Authentication required')
+        }
+        else{
+            const userData = jwt.verify(req.header('x-auth-token'),JWT_KEY);
+            const userExist = await mod_users.findOne({
+                where: {
+                    username: userData.username
+                }
+            });
+            
         const user = db.DevUser.build({
-            username: username
+            username: username,
+            user_id: userExist.id
         });
         await user.save();
 
         return res.status(200).send(user);
+        }
     },
 
     /**
