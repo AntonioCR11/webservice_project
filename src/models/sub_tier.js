@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     duration: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
-    }
+    },
   }, {
     sequelize,
     modelName: 'SubTier',
