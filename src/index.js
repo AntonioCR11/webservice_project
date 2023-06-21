@@ -28,7 +28,6 @@ const initApp = async () => {
     }
 }
 initApp();
-app.post("/api/users/register", userFunction.addUser);
 
 module.exports = app;
 

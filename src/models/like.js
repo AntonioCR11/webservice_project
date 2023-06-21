@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT.UNSIGNED,
       primaryKey: true,
       allowNull: false
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
     }
   }, {
     sequelize,
