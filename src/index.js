@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-app.use('/api/', globalRouter);
+app.use('/api', globalRouter);
 var userFunction = require("./controllers/UserController");
 const initApp = async () => { 
     console.log("Testing database connection");
