@@ -131,7 +131,12 @@ const commentController = {
      * @returns A response object with a json body containing a max page for the pagination, as well as the list of comments and replies.
      */
     getComments: async (req, res) => {
-
+        const validateSchema = joi.object({
+            page: joi.number().min(1).required(),
+            limit: joi.number().min(1).required()
+        });
+        const validateResult = validateSchema.validate(req.query);
+        if (validateResult.error) return res.status(422).send({ message: "request is not valid!" });
         const pagination = await PaginationUtil.getPaginatedModels(req, {
             where: {
                 parent_id: null

@@ -341,8 +341,8 @@ const replyController = {
                         else {
                             const getReply = await db.Comment.findAll({
                                 where: {
-                                    parent_id: replyId,
-                                    id: commentId,
+                                    parent_id: commentId,
+                                    id: replyId,
                                     deleted_at: null
                                 }
                             });
@@ -355,7 +355,7 @@ const replyController = {
                                 try {
                                     await db.Comment.update(
                                         { deleted_at: new Date() },
-                                        { where: { id: commentId, parent_id: replyId } }
+                                        { where: { id: replyId, parent_id: commentId } }
                                     ).then(() => {
                                         return res.status(200).send({
                                             'message': "Soft delete performed successfully.",
@@ -446,73 +446,73 @@ const replyController = {
                             })
                         }
                         else {
-                            return true;
+                            const getComment = await db.Comment.findAll({
+                                where: {
+                                    id: commentId,
+                                    deleted_at: null
+                                }
+                            });
+                            if (getComment.length == 0) {
+                                return res.status(404).send({
+                                    'message': "Comment not found or already deleted"
+                                })
+                            }
+                            else {
+                                if (req.file == undefined) {
+                                    try {
+                                        await db.Comment.create({
+                                            content_id: content_id,
+                                            content_url: content_url,
+                                            parent_id: commentId,
+                                            dev_user_id: dev_user_id,
+                                            body: body,
+                                            is_reaction: is_reaction,
+                                        }).then((result) => {
+                                            return res.status(200).send({
+                                                'message': "success",
+                                                'data': result
+                                            })
+                                        })
+                                    } catch (error) {
+                                        return res.status(403).send({
+                                            'message': "Error",
+                                            'data': error.toString()
+                                        })
+                                    }
+                                }
+                                else {
+                                    try {
+                                        await db.Comment.create({
+                                            content_id: content_id,
+                                            content_url: content_url,
+                                            parent_id: commentId,
+                                            dev_user_id: dev_user_id,
+                                            body: body,
+                                            is_reaction: 1,
+                                        }).then((result) => {
+                                            return res.status(200).send({
+                                                'message': "success",
+                                                'data': result
+                                            })
+                                        })
+                                        let temp = req.file.originalname.split(".");
+                                        const oldExt = temp[temp.length - 1];
+                
+                                        const filename = `${newComment.id}.${oldExt}`;
+                                        fs.renameSync(`./src/public/images/${req.file.filename}`, `./src/public/images/${filename}`);
+                                    } catch (error) {
+                                        return res.status(403).send({
+                                            'message': "Error",
+                                            'data': error.toString()
+                                        })
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-            const getComment = await db.Comment.findAll({
-                where: {
-                    id: commentId,
-                    deleted_at: null
-                }
-            });
-            if (getComment.length == 0) {
-                return res.status(404).send({
-                    'message': "Comment not found or already deleted"
-                })
-            }
-            else {
-                if (req.file == undefined) {
-                    try {
-                        await db.Comment.create({
-                            content_id: content_id,
-                            content_url: content_url,
-                            parent_id: commentId,
-                            dev_user_id: dev_user_id,
-                            body: body,
-                            is_reaction: is_reaction,
-                        }).then((result) => {
-                            return res.status(200).send({
-                                'message': "success",
-                                'data': result
-                            })
-                        })
-                    } catch (error) {
-                        return res.status(403).send({
-                            'message': "Error",
-                            'data': error.toString()
-                        })
-                    }
-                }
-                else {
-                    try {
-                        await db.Comment.create({
-                            content_id: content_id,
-                            content_url: content_url,
-                            parent_id: commentId,
-                            dev_user_id: dev_user_id,
-                            body: body,
-                            is_reaction: 1,
-                        }).then((result) => {
-                            return res.status(200).send({
-                                'message': "success",
-                                'data': result
-                            })
-                        })
-                        let temp = req.file.originalname.split(".");
-                        const oldExt = temp[temp.length - 1];
-
-                        const filename = `${newComment.id}.${oldExt}`;
-                        fs.renameSync(`./src/public/images/${req.file.filename}`, `./src/public/images/${filename}`);
-                    } catch (error) {
-                        return res.status(403).send({
-                            'message': "Error",
-                            'data': error.toString()
-                        })
-                    }
-                }
-            }
+            
 
         }
 
