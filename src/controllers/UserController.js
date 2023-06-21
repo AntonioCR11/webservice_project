@@ -276,8 +276,61 @@ const UserController = {
             
                 
         }
-    }
+    },
+    userTopup : async (req, res) => {
+        if(!req.header('x-auth-token')){
+            return res.status(400).send('Unauthorized');
+        }
+        try{
 
+            let userdata = jwt.verify(req.header('x-auth-token'), JWT_KEY);
+        }
+        catch(err){
+            return res.status(400).send('Invalid Token');
+        }
+        const schema = Joi.object({
+            username: Joi.string().required().min(6).max(15),
+            password: Joi.string().alphanum().required().min(6).max(15),
+            amount: Joi.number().required().min(1),
+        });
+        const { error } = schema.validate(req.body);
+        if (error) {
+            return res.status(400).send({
+                message: error.details[0].message,
+            });
+        }
+        const userExist = await mod_users.findOne({
+            where: {
+                username: req.body.username
+            }
+        });
+        if (!userExist) {
+            return res.status(400).send({
+                message: "Username not found",
+            });
+        }
+        if (userExist.password !== req.body.password) {
+            return res.status(400).send({
+                message: "Password is wrong",
+            });
+        }
+        var userBalance = userExist.saldo;
+        var newBalance = parseInt(userBalance) + parseInt(req.body.amount);
+        await mod_users.update({
+            saldo: newBalance,
+        }, {
+            where: {
+                username: req.body.username
+            }
+        });
+        return res.status(200).send({
+            message: "Topup successful",
+            body: {
+                username: req.body.username,
+                saldo: newBalance,
+            }
+        });
+    },
 }
 
 module.exports = UserController;

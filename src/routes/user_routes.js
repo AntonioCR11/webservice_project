@@ -8,5 +8,6 @@ router.post("/login", UserController.userLogin);
 router.post("/subs", UserController.subsTier);
 router.put("/:username", UserController.updateUser);
 router.delete("/:username", UserController.deleteUser);
+router.post("/topup", UserController.userTopup);
 
 module.exports = router;
