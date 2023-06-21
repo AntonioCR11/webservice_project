@@ -25,6 +25,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      saldo: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
