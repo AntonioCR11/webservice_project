@@ -4,7 +4,16 @@ const Joi = require('joi').extend(require('@joi/date'));
 const axios = require('axios');
 const multer = require("multer");
 const fs = require("fs");
-  
+
+
+const langAvailable = ['uz', 'fy', 'oc', 'br', 'ka', 'lo', 'ms', 'sk', 'km', 'az', 'id', 'uk', 'lg', 'ss', 
+'fr', 'ps', 'yi', 'be', 'ln', 'sr', 'es', 'kn', 'so', 'hi', 'sq', 'gl', 'bg', 'fi', 
+'vi', 'bs', 'mn', 'en', 'gd', 'ne', 'tr', 'sl', 'nl', 'pa', 'zh', 'ur', 'mr', 'lv', 
+'ceb', 'it', 'ja', 'ru', 'is', 'ha', 'lb', 'su', 'yo', 'de', 'tl', 'gu', 'da', 'xh', 
+'hu', 'ff', 'cs', 'mk', 'sd', 'no', 'wo', 'ns', 'et', 'he', 'ta', 'am', 'pl', 'ba', 
+'th', 'ig', 'ro', 'si', 'jv', 'kk', 'hy', 'sw', 'ast', 'pt', 'mg', 'zu', 'bn', 'ga', 
+'ml', 'hr', 'tn', 'cy', 'af', 'ilo', 'el', 'sv', 'ko', 'lt', 'fa', 'or', 'my', 'ar', 'ca', 'ht'];
+
 const generateWordCloud = async(req,res)=>{
     // VALIDATION
     const schema = Joi.object({
@@ -72,7 +81,12 @@ const translateLanguage = async(req,res)=>{
     let {lang} = req.query;
     if(!lang){
         lang = "en";
+    }else{
+        if(!langAvailable.find(e => e == lang)){
+            return res.status(404).send({message : "Language not available!"})
+        }
     }
+
     let rapidApiKey = req.get("X-RapidAPI-Key");
     let rapidApiHost =  req.get("X-RapidAPI-Host");
 

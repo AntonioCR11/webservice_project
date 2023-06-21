@@ -265,6 +265,7 @@ const commentController = {
             statusCode: 422,
             message: validateResult.error.message
         });
+
         let reply = await db.Comment.findAll({
             where: {
                 id: commentId,
