@@ -25,7 +25,7 @@ router.get("/:commentId", commentController.getSpecificComment);
 router.put("/:commentId", upload.single("image"), commentController.updateComment);
 router.delete("/:commentId", commentController.deleteComment);
 // Reply
-router.get("/:commentId/replies", replyController.getCommentReplies);
+router.get("/:commentId/replies/:replyId", replyController.getCommentReplies);
 router.put("/:commentId/replies/:replyId", replyController.updateCommentReplies);
 router.delete("/:commentId/replies/:replyId", replyController.deleteCommentReplies);
 router.post("/:commentId/replies", upload.single("image"), replyController.createCommentReply);

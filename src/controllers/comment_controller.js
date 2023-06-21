@@ -39,51 +39,87 @@ const commentController = {
             statusCode: 422,
             message: validateResult.error.message
         });
-        
-        // Check if the request include an image
-        if (req.file == undefined) {
-            // Create a text-based comment
-            
-            const newComment = db.Comment.build({
-                content_id,
-                content_url,
-                parent_id,
-                dev_user_id,
-                body,
-                is_reaction,
+        const devUser = await db.DevUser.findAll({
+            where: {
+                id: dev_user_id,
+                deleted_at: null
+            }
+        });
+        if (devUser.length == 0) {
+            return res.status(404).send({
+                'message': "Dev user not found or already deleted"
+            })
+        }
+        else {
+            const subs = await db.Subscription.findAll({
+                where: {
+                    user_id: devUser[0].user_id
+                }
             });
-            await newComment.save();
+            if (subs.length == 0) {
+                return res.status(404).send({
+                    'message': "Not subscribed to any tier"
+                })
+            }
+            else {
+                const endDate = new Date(subs[0].end_date);
+                const now = new Date();
+                if (endDate < now) {
+                    return res.status(403).send({
+                        'message': "Subscription expired",
+                        'Now': now,
+                        'End Date': endDate
+                    })
+                }
+                else {
 
-            return res.status(201).send({
-                statusCode: 201,
-                message: "Success",
-                comment: newComment
-            });
-        }else{
-            const newComment = db.Comment.build({
-                content_id,
-                content_url,
-                parent_id,
-                dev_user_id,
-                body,
-                is_reaction : 1
-            });
-            await newComment.save();
+                    // Check if the request include an image
+                    if (req.file == undefined) {
+                        // Create a text-based comment
 
-            let temp = req.file.originalname.split(".");
-            const oldExt = temp[temp.length-1];
-        
-            const filename = `${newComment.id}.${oldExt}`;
-            fs.renameSync(`./src/public/images/${req.file.filename}`, `./src/public/images/${filename}`);
-            
-            return res.status(201).send({
-                statusCode: 201,
-                message: "Success upload comment with image!",
-                comment: newComment,
-            });
+                        const newComment = db.Comment.build({
+                            content_id,
+                            content_url,
+                            parent_id,
+                            dev_user_id,
+                            body,
+                            is_reaction,
+                        });
+                        await newComment.save();
+
+                        return res.status(201).send({
+                            statusCode: 201,
+                            message: "Success",
+                            comment: newComment
+                        });
+                    } else {
+                        const newComment = db.Comment.build({
+                            content_id,
+                            content_url,
+                            parent_id,
+                            dev_user_id,
+                            body,
+                            is_reaction: 1
+                        });
+                        await newComment.save();
+
+                        let temp = req.file.originalname.split(".");
+                        const oldExt = temp[temp.length - 1];
+
+                        const filename = `${newComment.id}.${oldExt}`;
+                        fs.renameSync(`./src/public/images/${req.file.filename}`, `./src/public/images/${filename}`);
+
+                        return res.status(201).send({
+                            statusCode: 201,
+                            message: "Success upload comment with image!",
+                            comment: newComment,
+                        });
+                    }
+                }
+            }
         }
     },
-    
+
     /**
      * Get a list of comments from the database, including replies.
      * 
@@ -95,6 +131,7 @@ const commentController = {
      * @returns A response object with a json body containing a max page for the pagination, as well as the list of comments and replies.
      */
     getComments: async (req, res) => {
+
         const pagination = await PaginationUtil.getPaginatedModels(req, {
             where: {
                 parent_id: null
@@ -106,7 +143,7 @@ const commentController = {
             comments: pagination.models
         });
     },
-    
+
     /**
      * Get a specific comment from the database using their id.
      * 
@@ -122,16 +159,66 @@ const commentController = {
         });
         const validateResult = validateSchema.validate(req.params);
         if (validateResult.error) return res.status(422).send({ message: "Comment id is not valid!" });
-
-        const targetedComment = await db.Comment.findByPk(commentId);
-        if (targetedComment === null) return res.status(422).send({
-            statusCode: 422,
-            message: "Comment not found!"
+        let reply = await db.Comment.findAll({
+            where: {
+                id: commentId,
+                deleted_at: null
+            }
         });
 
-        return res.status(200).send(targetedComment);
+        if (reply.length == 0) {
+            return res.status(404).send({
+                'message': "Reply not found or already deleted"
+            })
+        }
+        else {
+            const devUser = await db.DevUser.findAll({
+                where: {
+                    id: reply[0].dev_user_id,
+                    deleted_at: null
+                }
+            });
+            if (devUser.length == 0) {
+                return res.status(404).send({
+                    'message': "Dev user not found or already deleted"
+                })
+            }
+            else {
+                const subs = await db.Subscription.findAll({
+                    where: {
+                        user_id: devUser[0].user_id
+                    }
+                });
+                if (subs.length == 0) {
+                    return res.status(404).send({
+                        'message': "Not subscribed to any tier"
+                    })
+                }
+                else {
+                    const endDate = new Date(subs[0].end_date);
+                    const now = new Date();
+                    if (endDate < now) {
+                        return res.status(403).send({
+                            'message': "Subscription expired",
+                            'Now': now,
+                            'End Date': endDate
+                        })
+                    }
+                    else {
+                        const targetedComment = await db.Comment.findByPk(commentId);
+                        if (targetedComment === null) return res.status(422).send({
+                            statusCode: 422,
+                            message: "Comment not found!"
+                        });
+
+                        return res.status(200).send(targetedComment);
+                    }
+                }
+            }
+        }
+
     },
-    
+
     /**
      * Updates a comment based on the id.
      * 
@@ -178,35 +265,85 @@ const commentController = {
             statusCode: 422,
             message: validateResult.error.message
         });
+        let reply = await db.Comment.findAll({
+            where: {
+                id: commentId,
+                deleted_at: null
+            }
+        });
 
-        // Check if an image is supplied with the image file or not
-        if (req.file == undefined) {
-            // Create a text-based comment
-            const targetedComment = await db.Comment.findByPk(Number(commentId));
-
-            targetedComment.content_id = content_id,
-            targetedComment.content_url = content_url,
-            targetedComment.parent_id = parent_id,
-            targetedComment.dev_user_id = dev_user_id,
-            targetedComment.body = body,
-            targetedComment.is_reaction = is_reaction,
-
-            await targetedComment.save();
-
-            return res.status(200).send({
-                statusCode: 200,
-                message: "Success",
-                comment: targetedComment
-            });
+        if (reply.length == 0) {
+            return res.status(404).send({
+                'message': "Reply not found or already deleted"
+            })
         }
         else {
-            // TODO: Create an image based comment
-            // WARNING: If it is an image, make sure that the is_reaction is = 1,
-            //          or if you want to, you can set it by default to be 1 to indicate it is a picture
-            console.log(req.file);
+            const devUser = await db.DevUser.findAll({
+                where: {
+                    id: reply[0].dev_user_id,
+                    deleted_at: null
+                }
+            });
+            if (devUser.length == 0) {
+                return res.status(404).send({
+                    'message': "Dev user not found or already deleted"
+                })
+            }
+            else {
+                const subs = await db.Subscription.findAll({
+                    where: {
+                        user_id: devUser[0].user_id
+                    }
+                });
+                if (subs.length == 0) {
+                    return res.status(404).send({
+                        'message': "Not subscribed to any tier"
+                    })
+                }
+                else {
+                    const endDate = new Date(subs[0].end_date);
+                    const now = new Date();
+                    if (endDate < now) {
+                        return res.status(403).send({
+                            'message': "Subscription expired",
+                            'Now': now,
+                            'End Date': endDate
+                        })
+                    }
+                    else {
+                        // Check if an image is supplied with the image file or not
+                        if (req.file == undefined) {
+                            // Create a text-based comment
+                            const targetedComment = await db.Comment.findByPk(Number(commentId));
+
+                            targetedComment.content_id = content_id,
+                                targetedComment.content_url = content_url,
+                                targetedComment.parent_id = parent_id,
+                                targetedComment.dev_user_id = dev_user_id,
+                                targetedComment.body = body,
+                                targetedComment.is_reaction = is_reaction,
+
+                                await targetedComment.save();
+
+                            return res.status(200).send({
+                                statusCode: 200,
+                                message: "Success",
+                                comment: targetedComment
+                            });
+                        }
+                        else {
+                            // TODO: Create an image based comment
+                            // WARNING: If it is an image, make sure that the is_reaction is = 1,
+                            //          or if you want to, you can set it by default to be 1 to indicate it is a picture
+                            console.log(req.file);
+                        }
+                    }
+                }
+            }
         }
+
     },
-    
+
     /**
      * Soft delete a comment from the database.
      * 
@@ -225,18 +362,68 @@ const commentController = {
         });
         const validateResult = validateSchema.validate(req.params);
         if (validateResult.error) return res.status(422).send({ message: "Comment id is not valid!" });
-
-        const targetedComment = await db.Comment.findByPk(commentId);
-        if (targetedComment === null) return res.status(422).send({
-            statusCode: 422,
-            message: "Comment not found!"
+        let reply = await db.Comment.findAll({
+            where: {
+                id: commentId,
+                deleted_at: null
+            }
         });
 
-        await targetedComment.destroy();
+        if (reply.length == 0) {
+            return res.status(404).send({
+                'message': "Reply not found or already deleted"
+            })
+        }
+        else {
+            const devUser = await db.DevUser.findAll({
+                where: {
+                    id: reply[0].dev_user_id,
+                    deleted_at: null
+                }
+            });
+            if (devUser.length == 0) {
+                return res.status(404).send({
+                    'message': "Dev user not found or already deleted"
+                })
+            }
+            else {
+                const subs = await db.Subscription.findAll({
+                    where: {
+                        user_id: devUser[0].user_id
+                    }
+                });
+                if (subs.length == 0) {
+                    return res.status(404).send({
+                        'message': "Not subscribed to any tier"
+                    })
+                }
+                else {
+                    const endDate = new Date(subs[0].end_date);
+                    const now = new Date();
+                    if (endDate < now) {
+                        return res.status(403).send({
+                            'message': "Subscription expired",
+                            'Now': now,
+                            'End Date': endDate
+                        })
+                    }
+                    else {
 
-        return res.status(200).send(targetedComment);
+                        const targetedComment = await db.Comment.findByPk(commentId);
+                        if (targetedComment === null) return res.status(422).send({
+                            statusCode: 422,
+                            message: "Comment not found!"
+                        });
+
+                        await targetedComment.destroy();
+
+                        return res.status(200).send(targetedComment);
+                    }
+                }
+            }
+        }
     },
-    
+
     /**
      * Search for a comment for a database based on a keyword.
      * 
@@ -267,5 +454,8 @@ const commentController = {
         });
     }
 };
+async function cekSubs(commentId, res) {
 
+
+}
 module.exports = commentController;

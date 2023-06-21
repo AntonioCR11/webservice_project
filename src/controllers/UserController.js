@@ -10,6 +10,7 @@ mod_users = require('../models/user')(sequelize, Sequelize.DataTypes);
 sequelize.sync();
 
 const jwt = require("jsonwebtoken");
+const user = require("../models/user");
 const JWT_KEY = 'KELOMPOK_OP';
 
 const UserController = {
@@ -191,6 +192,91 @@ const UserController = {
             }
         });
     },
+    subsTier: async (req, res) => {
+        const {tier_id} = req.body
+        if(tier_id==null){
+            return res.status(400).send({
+                message: "Tier id is null",
+            });
+        }
+        if(!req.header('x-auth-token')){
+            return res.status(400).send('Authentication required')
+        }
+        else{
+            const userData = jwt.verify(req.header('x-auth-token'),JWT_KEY);
+            const userExist = await mod_users.findOne({
+                where: {
+                    username: userData.username
+                }
+            });
+            if (!userExist) {
+                return res.status(400).send({
+                    message: "Username not found",
+                });
+            }
+            const tierExist = await db.SubTier.findOne({
+                where: {
+                    id: tier_id
+                }
+            });
+            if (!tierExist) {
+                return res.status(400).send({
+                    message: "Tier not found",
+                });
+            }
+            const balance = userExist.saldo - tierExist.price;
+                if(balance < 0){
+                    return res.status(400).send({
+                        message: "Insufficient balance",
+                    });
+                }
+                else{
+                    await mod_users.update({
+                        saldo: balance
+                    }, {
+                        where: {
+                            username: userData.username
+                        }
+                    });
+                    const subsExist = await db.Subscription.findOne({
+                        where: {
+                            user_id: userExist.id,
+                            transaction_status: "completed"
+                        }
+                    });
+                    if (subsExist) {
+                        subsExist.update({
+                            start_date: new Date(Date.now()),
+                            end_date: new Date(Date.now() + tierExist.duration * 24 * 60 * 60 * 1000),
+                            tier_id: tier_id,
+                            price: tierExist.price,
+                            duration: tierExist.duration,
+                        });
+                    }
+                    else{
+                        const newSubs = db.Subscription.build({
+                            user_id : userExist.id,
+                            tier_id : tier_id,
+                            price : tierExist.price,
+                            duration : tierExist.duration,
+                            start_date : new Date(Date.now()),
+                            end_date : new Date(Date.now() + tierExist.duration * 24 * 60 * 60 * 1000),
+                            transaction_status : "completed"
+                        })
+                        await newSubs.save();
+                    }
+                    return res.status(200).send({
+                        message: "Subscription successful",
+                        body: {
+                            username: userData.username,
+                            tier_id: tier_id,
+                        }
+                    });
+                }
+            
+                
+        }
+    }
 
 }
 

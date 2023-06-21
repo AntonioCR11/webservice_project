@@ -5,6 +5,7 @@ const UserController = require(path.join(__dirname, "..", "controllers", "UserCo
 
 router.post("/register", UserController.addUser);
 router.post("/login", UserController.userLogin);
+router.post("/subs", UserController.subsTier);
 router.put("/:username", UserController.updateUser);
 router.delete("/:username", UserController.deleteUser);
 
