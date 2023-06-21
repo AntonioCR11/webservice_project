@@ -11,16 +11,35 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Subscription.belongsTo(models.User, { foreignKey: 'user_id' });
-      Subscription.hasOne(models.Sub_tier, { foreignKey: 'tier_id' });
+      Subscription.belongsTo(models.SubTier, { foreignKey: 'tier_id' });
     }
   }
   Subscription.init({
-    id: DataTypes.INTEGER,
-    user_id: DataTypes.INTEGER,
-    tier_id: DataTypes.INTEGER,
-    price: DataTypes.INTEGER,
-    duration: DataTypes.INTEGER,
-    transaction_status: DataTypes.STRING
+    id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    user_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false
+    },
+    tier_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+    },
+    price: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    transaction_status: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Subscription',

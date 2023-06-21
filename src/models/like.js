@@ -16,12 +16,22 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Like.init({
-    dev_user_id: DataTypes.INTEGER,
-    comment_id: DataTypes.INTEGER
+    dev_user_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      primaryKey: true,
+      allowNull: false
+    },
+    comment_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      primaryKey: true,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Like',
     timestamps: true,
+    createdAt: true,
+    updatedAt: false,
     underscored: true,
   });
   return Like;

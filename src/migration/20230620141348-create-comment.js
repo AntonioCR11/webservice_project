@@ -7,18 +7,18 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT.UNSIGNED
       },
       content_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       content_url: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       parent_id: {
-        type: Sequelize.INTEGER, // Change to Sequelize.INTEGER for self-referencing
+        type: Sequelize.BIGINT.UNSIGNED, // Change to Sequelize.INTEGER for self-referencing
         allowNull: true, // Allow null for the root comments without a parent
         references: {
           model: 'Comments', // Self-reference to the same table
@@ -38,7 +38,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       body: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       total_likes: {

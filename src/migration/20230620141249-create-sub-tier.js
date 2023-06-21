@@ -7,23 +7,16 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       price: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       duration: {
-        type: Sequelize.INTEGER
-      },
-      created_at: {
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
-        type: Sequelize.DATE
       },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      deleted_at: Sequelize.DATE
     });
   },
   async down(queryInterface, Sequelize) {

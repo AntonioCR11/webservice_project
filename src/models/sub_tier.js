@@ -3,24 +3,36 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Sub_tier extends Model {
+  class SubTier extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Sub_tier.belongsTo(models.Subscription, { foreignKey: 'tier_id' });
+      SubTier.hasMany(models.Subscription, { foreignKey: 'tier_id' });
     }
   }
-  Sub_tier.init({
-    id: DataTypes.INTEGER,
-    price: DataTypes.INTEGER,
-    duration: DataTypes.INTEGER
+  SubTier.init({
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      primaryKey: false,
+      autoIncrement: true,
+    },
+    price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    duration: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
+    }
   }, {
     sequelize,
-    modelName: 'Sub_tier',
+    modelName: 'SubTier',
+    modelName: 'sub_tiers',
+    timestamps: false,
     underscored: true,
   });
-  return Sub_tier;
+  return SubTier;
 };

@@ -20,10 +20,10 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       tier_id: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
-          model: 'Subscriptions',
+          model: 'sub_tiers',
           key: 'id'
         },
         onUpdate: 'CASCADE',
