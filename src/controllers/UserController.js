@@ -46,11 +46,13 @@ const UserController = {
                 message: "Username already exist",
             });
         }
+        let randomString = Math.random().toString(36).slice(2, 7);
         await mod_users.create({
             username: req.body.username,
             password: req.body.password,
             email: req.body.email,
-            gender: req.body.gender
+            gender: req.body.gender,
+            apikey : randomString
         });
         return res.status(201).send({
             message: "User added successfuly",
@@ -89,7 +91,8 @@ const UserController = {
         const token = jwt.sign({
             username: userExist.username,
             email: userExist.email,
-        }, JWT_KEY);
+            apikey: userExist.apikey
+        }, JWT_KEY, { expiresIn: "1h" });
         return res.status(200).send({
             message: "Login successful",
             token: token,

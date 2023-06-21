@@ -36,21 +36,19 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    created_at: {
-      type: DataTypes.DATE,
+    apikey: {
+      type: DataTypes.STRING,
       allowNull: false,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    deleted_at: DataTypes.DATE
+    }
 
   }, {
     sequelize,
     modelName: 'User',
     paranoid: true,
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
     underscored: true,
   });
   return User;
