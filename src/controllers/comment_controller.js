@@ -4,7 +4,7 @@ const { Op } = require("sequelize");
 const fs = require("fs");
 
 const db = require(path.join(__dirname, "..", "models"));
-const PaginationUtil = require(path.join(__dirname, "..", "utils", "pagination"))
+// const PaginationUtil = require(path.join(__dirname, "..", "utils", "pagination"))
 
 const commentController = {
     /**
@@ -227,6 +227,6 @@ const commentController = {
             comments: []
         });
     }
-}
+};
 
 module.exports = commentController;

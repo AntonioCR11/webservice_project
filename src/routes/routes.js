@@ -6,11 +6,10 @@ const router = express.Router();
 const {
     exampleFunction,
 } = require('../controllers/controller');
-
+const UserRoutes = require(path.join(__dirname, "user_routes"));
 // Import the dev users route
 const devUserRoutes = require(path.join(__dirname, "dev_user_routes"));
 const commentRoutes = require(path.join(__dirname, "comment_routes"));
-const UserRoutes = require(path.join(__dirname, "user_routes"));
 
 router.get('/exampleRoute', exampleFunction);
 
