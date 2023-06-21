@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   SubTier.init({
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
-      primaryKey: false,
+      primaryKey: true,
       autoIncrement: true,
     },
     price: {
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'SubTier',
-    modelName: 'sub_tiers',
+    tableName: 'sub_tiers',
     timestamps: false,
     underscored: true,
   });
