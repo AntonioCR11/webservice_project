@@ -54,12 +54,24 @@ const UserController = {
             gender: req.body.gender,
             apikey : randomString
         });
+        var userSize = await mod_users.count();
+        const newTrialSubs = db.Subscription.build({
+            user_id : userSize,
+            tier_id : 1,
+            price : 0,
+            duration : 7,
+            start_date : new Date(Date.now()),
+            end_date : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            transaction_status : "completed"
+        })
+        await newTrialSubs.save();
         return res.status(201).send({
             message: "User added successfuly",
             body: {
                 username: req.body.username,
                 email: req.body.email,
-            }
+            },
+            Additional : "Your trial subscription will end in " + new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
     },
     userLogin: async (req, res) => {

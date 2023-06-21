@@ -40,7 +40,23 @@ module.exports = {
       transaction_status: {
         type: Sequelize.STRING,
         allowNull: false,
-      }
+      },
+      start_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      end_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
     });
 
   },

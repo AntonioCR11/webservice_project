@@ -39,13 +39,20 @@ module.exports = (sequelize, DataTypes) => {
     transaction_status: {
       type: DataTypes.STRING,
       allowNull: false
-    }
+    },
+    start_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    end_date: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
   }, {
     sequelize,
     modelName: 'Subscription',
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    deletedAt: 'deleted_at',
     underscored: true,
   });
   return Subscription;
