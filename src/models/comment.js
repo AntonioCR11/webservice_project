@@ -56,21 +56,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    deleted_at: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Comment',
     paranoid: true,
     timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+    deletedAt: "deleted_at",
     underscored: true,
   });
-  return Comment;
+  return Comment
 };
