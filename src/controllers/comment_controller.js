@@ -1,6 +1,7 @@
 const path = require("path");
 const joi = require("joi");
 const { Op } = require("sequelize");
+const fs = require("fs");
 
 const db = require(path.join(__dirname, "..", "models"));
 const PaginationUtil = require(path.join(__dirname, "..", "utils", "pagination"))
@@ -37,10 +38,11 @@ const commentController = {
             statusCode: 422,
             message: validateResult.error.message
         });
-
+        
         // Check if the request include an image
         if (req.file == undefined) {
             // Create a text-based comment
+            
             const newComment = db.Comment.build({
                 content_id,
                 content_url,
@@ -49,7 +51,6 @@ const commentController = {
                 body,
                 is_reaction,
             });
-
             await newComment.save();
 
             return res.status(201).send({
@@ -57,12 +58,28 @@ const commentController = {
                 message: "Success",
                 comment: newComment
             });
-        }
-        else {
-            // TODO: Create an image based comment
-            // WARNING: If it is an image, make sure that the is_reaction is = 1,
-            //          or if you want to, you can set it by default to be 1 to indicate it is a picture
-            console.log(req.file);
+        }else{
+            const newComment = db.Comment.build({
+                content_id,
+                content_url,
+                parent_id,
+                dev_user_id,
+                body,
+                is_reaction : 1
+            });
+            await newComment.save();
+
+            let temp = req.file.originalname.split(".");
+            const oldExt = temp[temp.length-1];
+        
+            const filename = `${newComment.id}.${oldExt}`;
+            fs.renameSync(`./src/public/images/${req.file.filename}`, `./src/public/images/${filename}`);
+            
+            return res.status(201).send({
+                statusCode: 201,
+                message: "Success upload comment with image!",
+                comment: newComment,
+            });
         }
     },
     

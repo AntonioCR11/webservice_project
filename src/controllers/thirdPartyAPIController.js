@@ -47,7 +47,6 @@ const generateWordCloud = async(req,res)=>{
         "word-cloud" : result
     });
 }
-
 const translateLanguage = async(req,res)=>{
     // VALIDATION
     /*
