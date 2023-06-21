@@ -1,17 +1,20 @@
 const express = require("express");
-const app = express();
+var app = express();
 const port = 3000;
-
+var bodyParser = require('body-parser');
 const globalRouter = require('./routes/routes');
-const Associations = require("./models/association")();
+// const Associations = require("./models/association")();
 
 const db = require('./databases/connection');
 
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}))
+app.use(bodyParser.json())
 
 app.use('/api/', globalRouter);
-
+var userFunction = require("./controllers/UserController");
 const initApp = async () => { 
     console.log("Testing database connection");
     try {
@@ -24,6 +27,10 @@ const initApp = async () => {
     } catch (error) {
         console.error("Failure database connection : ", error.original);
     }
- }
-
+}
 initApp();
+app.post("/register", userFunction.addUser);
+
+module.exports = app;
+
+
