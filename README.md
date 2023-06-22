@@ -9,6 +9,7 @@
 
 ### API Description:
 ==================
+
 The Comment Service API is designed to be integrated into software or applications that have content uploading and comment systems. This API provides a set of endpoints that enable the creation, retrieval, updating, and deletion of comments in both text and image forms. It also offers additional features such as a reply comment system, comment translation, word cloud generation from uploaded content, and an explicit image filter.
 
 Key Features of the Comment Service API:
