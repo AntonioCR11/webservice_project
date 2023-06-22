@@ -22,10 +22,10 @@ The Comment Service API is designed to be integrated into software or applicatio
 By integrating the Comment Service API into their software or application, developers can enhance user engagement, improve communication among users, provide multilingual support, generate meaningful insights from user-generated content, and ensure a safe and inclusive commenting experience.
 
 ## Third Party API
-===================
-- Open AI
-- NSFW images detection and classification
-- Google Translate
+
+- [Open AI](https://rapidapi.com/openai-api-openai-api-default/api/openai80/)
+- [NSFW Detector](https://rapidapi.com/smartclick-smartclick-default/api/nsfw-images-detection-and-classification/)
+- [Translator](https://rapidapi.com/ayfie-ayfie-default/api/translator82/)
 
 ## Endpoint:
 
