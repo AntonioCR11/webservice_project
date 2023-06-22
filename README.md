@@ -1,11 +1,12 @@
 # webservice_project
 
-### Developer:
-==============
-- 220116918 - Ian Nathaneil William (Ketua)
-- 220116901 - Albertus Marco Penolla Ruslie
-- 220116904 - Andrew Anderson
-- 220116906 - Antonio Christopher
+## Developer:
+
+- [@AntonioCR11](https://www.github.com/AntonioCR11)
+- [@marcoruslie](https://www.github.com/marcoruslie)
+- [@andrewloekito123](https://www.github.com/andrewloekito123)
+- [@DraSelXL ](https://www.github.com/DraSelXL )
+
 
 ### API Description:
 ==================
