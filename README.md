@@ -1,7 +1,5 @@
 # webservice_project
 
-Web Service Pembanding Barang, Stok, dan Harga Antar Online Shop
-
 ### Developer:
 ==============
 - 220116918 - Ian Nathaneil William (Ketua)
@@ -9,42 +7,24 @@ Web Service Pembanding Barang, Stok, dan Harga Antar Online Shop
 - 220116904 - Andrew Anderson
 - 220116906 - Antonio Christopher
 
-### Deskripsi API:
+### API Description:
 ==================
+The Comment Service API is designed to be integrated into software or applications that have content uploading and comment systems. This API provides a set of endpoints that enable the creation, retrieval, updating, and deletion of comments in both text and image forms. It also offers additional features such as a reply comment system, comment translation, word cloud generation from uploaded content, and an explicit image filter.
 
-Web Service ini bertujuan untuk memudahkan pengguna API untuk mencari barang di berbagai Online Shop. Target pengguna API ini adalah developer yang akan membuat sebuah aplikasi yang membutuhkan data barang dari berbagai sumber. Dengan menggunakan API ini, pengguna dapat mendapatkan nama, harga, toko, stock, dan informasi lainnya yang berhubungan dengan barang tersebut di sebuah Online Shop. Terdapat 2 versi saat menggunakan API ini, yaitu versi gratis dan berbayar. Dengan versi gratis, informasi yang didapatkan dari API ini terbatas, seperti hanya nama, toko dan harga saja. Tetapi dengan versi berbayar, maka akan mendapatkan informasi yang lebih lengkap, seperti diskon, dan voucher.
-
-Developer adalah orang yang akan menggunakan API kita dalam aplikasi mereka.
-Customer adalah orang yang akan mencari/membandingkan barang dalam API kita.
-
+Key Features of the Comment Service API:
+CRUD Operations for Comments: The API allows users to perform CRUD operations (Create, Read, Update, Delete) on comments. Developers can create new comments, retrieve existing comments, update comment content, and delete comments as needed.
+Support for Text and Image Comments: The API supports both text-based comments and comments with attached images. Developers can include text descriptions or upload images to enhance user engagement and interaction within the application.
+Reply Comment System: The API includes functionality for implementing a reply comment system. Users can respond to specific comments, creating threaded conversations and facilitating better engagement and communication among users.
+Comment Translation: The API offers the ability to translate comments into different languages. This feature enables users from diverse backgrounds to understand and interact with comments in their preferred language, promoting inclusivity and accessibility.
+Word Cloud Generator: Developers can utilize the API's word cloud generation feature to extract popular keywords or tags from the uploaded content. This can be used for searching purposes, similar to popular tags used on social media platforms like Instagram. The generated word cloud provides insights into trending topics or interests among users.
+Explicit Image Filter: The API incorporates an explicit image filter that analyzes and detects explicit or inappropriate content within uploaded images. This helps maintain a safe and respectful environment within the application by preventing the dissemination of explicit material.
+By integrating the Comment Service API into their software or application, developers can enhance user engagement, improve communication among users, provide multilingual support, generate meaningful insights from user-generated content, and ensure a safe and inclusive commenting experience.
 
 ### Third Party API
 ===================
 - Open AI
 - NSFW images detection and classification
 - Google Translate
-
-
-Contoh aplikasi yang dapat menggunakan API ini:
-1. Aplikasi comparator barang antar online shop. Contoh: https://www.userbenchmark.com/PCBuilder
-2. Add-on pencari diskon untuk barang yang dicari.
-
-
-### Business Model:
-===================
-- Subscription Model:
-	- Rp. 30k/bulan
-	- Rp. 50k/3 bulan
-	- Rp. 90k/6 bulan
-	- Rp. 150k/tahun
-
-### System Scope:
-=================
-
-- Upload File
-	- Komen Foto 
- 	- komen Gif 
-
 
 ### Endpoint:
 =============
