@@ -30,6 +30,27 @@ By integrating the Comment Service API into their software or application, devel
 - NSFW images detection and classification
 - Google Translate
 
+#### Get all comments
+
+```http
+  GET /api/commets
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `api_key` | `string` | **Required**. Your API key |
+
+#### Get a specific comment.
+
+```http
+  GET /api/comments/:id
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Optional**. Id of comment to fetch |
+
+
 ### Endpoint:
 =============
 // Endpoints
