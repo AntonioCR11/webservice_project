@@ -104,6 +104,7 @@ const UserController = {
                 message: "Password is wrong",
             });
         }
+        
         const token = jwt.sign({
             username: userExist.username,
             email: userExist.email,

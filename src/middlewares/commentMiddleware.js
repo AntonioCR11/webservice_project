@@ -38,9 +38,8 @@ const commentMiddleware = {
             } catch (error) {
                 console.error(error);
             }
-        }else{
-            next();
         }
+        next();
     },
 }
 module.exports = commentMiddleware;

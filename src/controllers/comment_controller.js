@@ -65,6 +65,7 @@ const commentController = {
             else {
                 const endDate = new Date(subs[0].end_date);
                 const now = new Date();
+
                 if (endDate < now) {
                     return res.status(403).send({
                         'message': "Subscription expired",
@@ -73,10 +74,8 @@ const commentController = {
                     })
                 }
                 else {
-
                     // Check if the request include an image
                     if (req.file == undefined) {
-                        // Create a text-based comment
 
                         const newComment = db.Comment.build({
                             content_id,
@@ -254,7 +253,6 @@ const commentController = {
             body,
             is_reaction
         } = req.body;
-
         // Validate request body
         const validateSchema = joi.object({
             "content_id": joi.string().required(),

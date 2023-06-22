@@ -1,10 +1,10 @@
 const { Op, QueryTypes, Sequelize } = require('sequelize');
-const db = require('../databases/connection');
+const path = require('path');
+const db = require(path.join(__dirname, "..", "models"));
 const Joi = require('joi').extend(require('@joi/date'));
 const axios = require('axios');
 const multer = require("multer");
 const fs = require("fs");
-
 
 const langAvailable = ['uz', 'fy', 'oc', 'br', 'ka', 'lo', 'ms', 'sk', 'km', 'az', 'id', 'uk', 'lg', 'ss', 
 'fr', 'ps', 'yi', 'be', 'ln', 'sr', 'es', 'kn', 'so', 'hi', 'sq', 'gl', 'bg', 'fi', 
@@ -16,16 +16,29 @@ const langAvailable = ['uz', 'fy', 'oc', 'br', 'ka', 'lo', 'ms', 'sk', 'km', 'az
 
 const generateWordCloud = async(req,res)=>{
     // VALIDATION
-    const schema = Joi.object({
-        comment: Joi.string().required().messages({
-            "string.empty" : "Comment field is required!",
-        }),
+    let {content_id} = req.params;
+    if(!content_id){
+        return res.status(400).send({message:"Content Id must be filled!"});
+    }
+    const comments = await db.Comment.findAll({
+        where: {
+            content_id : content_id
+        }
     });
-    try { await schema.validateAsync(req.body) } 
-    catch (error) { return res.status(400).send({message : error.toString()}) }
+    let commentConcat = "";
+    for (let index = 0; index < comments.length; index++) {
+        commentConcat += comments[index].dataValues.body +" ";
+    }
+    // const schema = Joi.object({
+    //     comment: Joi.string().required().messages({
+    //         "string.empty" : "Comment field is required!",
+    //     }),
+    // });
+    // try { await schema.validateAsync(req.body) } 
+    // catch (error) { return res.status(400).send({message : error.toString()}) }
 
     // Open AI API Call
-    let {comment} = req.body;
+    // let {comment} = req.body;
     let rapidApiKey = req.get("X-RapidAPI-Key");
     let rapidApiHost =  req.get("X-RapidAPI-Host");
     
@@ -36,7 +49,7 @@ const generateWordCloud = async(req,res)=>{
             messages: [
               {
                 role: 'user',
-                content: `generate 10 keyword in word form from this comment for popular search tag, just give the answer as one sentence separated by coma(,) : ${comment}`
+                content: `generate 10 keyword in word form from this comment for popular search tag, just give the answer as one sentence separated by coma(,) : ${commentConcat}`
               }
             ]
         },

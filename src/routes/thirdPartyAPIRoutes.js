@@ -7,7 +7,7 @@ const {
     translateLanguage,
 } = require('../controllers/thirdPartyAPIController');
 
-router.post('/generateWordCloud', generateWordCloud);
+router.post('/generateWordCloud/:content_id?', generateWordCloud);
 router.post('/translateLanguage', translateLanguage);
 
 

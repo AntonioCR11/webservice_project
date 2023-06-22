@@ -19,7 +19,8 @@ const commentController = require(path.join(__dirname, "..", "controllers", "com
 const replyController = require(path.join(__dirname, "..", "controllers", "reply_controller"));
 const commentMiddleware = require(path.join(__dirname, "..", "middlewares", "commentMiddleware"));
 // Comment
-router.post("/$", upload.single("image"),commentMiddleware.checkExplicitImage, commentController.createComment);
+router.post("/$", upload.single("image"), commentMiddleware.checkExplicitImage, commentController.createComment);
+
 router.get("/$", commentController.getComments);
 router.get("/search$", commentController.searchComment);
 router.get("/:commentId", commentController.getSpecificComment);
