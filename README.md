@@ -1,5 +1,7 @@
 # webservice_project
 
+The Comment Service API is designed to be integrated into software or applications that have content uploading and comment systems. This API provides a set of endpoints that enable the creation, retrieval, updating, and deletion of comments in both text and image forms. It also offers additional features such as a reply comment system, comment translation, word cloud generation from uploaded content, and an explicit image filter.
+
 ## Developer:
 
 - [@AntonioCR11](https://www.github.com/AntonioCR11)
@@ -7,11 +9,6 @@
 - [@andrewloekito123](https://www.github.com/andrewloekito123)
 - [@DraSelXL ](https://www.github.com/DraSelXL )
 
-
-### API Description:
-==================
-
-The Comment Service API is designed to be integrated into software or applications that have content uploading and comment systems. This API provides a set of endpoints that enable the creation, retrieval, updating, and deletion of comments in both text and image forms. It also offers additional features such as a reply comment system, comment translation, word cloud generation from uploaded content, and an explicit image filter.
 
 ## Key Features of the Comment Service API:
 
@@ -24,15 +21,16 @@ The Comment Service API is designed to be integrated into software or applicatio
 
 By integrating the Comment Service API into their software or application, developers can enhance user engagement, improve communication among users, provide multilingual support, generate meaningful insights from user-generated content, and ensure a safe and inclusive commenting experience.
 
-### Third Party API
+## Third Party API
 ===================
 - Open AI
 - NSFW images detection and classification
 - Google Translate
 
-### Endpoint:
-=============
-POSTMAN : [@DraSelXL ](https://www.github.com/DraSelXL )
+## Endpoint:
+
+POSTMAN : [@postman_collection](https://documenter.getpostman.com/view/11549557/2s93z58Q7a)
+
 // Endpoints
 1. [POST]  /api/comments
  - Create comment to a specific content id
