@@ -2,7 +2,8 @@ const path = require("path");
 const joi = require("joi");
 const { Op } = require("sequelize");
 const fs = require("fs");
-const PaginationUtil = require("../utils/pagination");
+const PaginationUtil = require(path.join(__dirname, "..", "utils", "pagination"));
+const DateFilter = require(path.join(__dirname, "..", "utils", "datefilter"));
 
 const db = require(path.join(__dirname, "..", "models"));
 // const PaginationUtil = require(path.join(__dirname, "..", "utils", "pagination"))
@@ -131,17 +132,15 @@ const commentController = {
      * @returns A response object with a json body containing a max page for the pagination, as well as the list of comments and replies.
      */
     getComments: async (req, res) => {
-        const validateSchema = joi.object({
-            page: joi.number().min(1).required(),
-            limit: joi.number().min(1).required()
-        });
-        const validateResult = validateSchema.validate(req.query);
-        if (validateResult.error) return res.status(422).send({ message: "request is not valid!" });
-        const pagination = await PaginationUtil.getPaginatedModels(req, {
+        let modifier = {
             where: {
                 parent_id: null
             }
-        }, db.Comment);
+        }
+
+        modifier = DateFilter.appendModifier(req, modifier);
+
+        const pagination = await PaginationUtil.getPaginatedModels(req, modifier, db.Comment);
 
         return res.status(200).send({
             maxPage: pagination.maxPage,
