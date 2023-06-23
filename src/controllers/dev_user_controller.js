@@ -263,21 +263,27 @@ const devUserController = {
         if(!req.header('x-auth-token')){
             return res.status(400).send('Authentication required')
         }
-        else{
-            const userData = jwt.verify(req.header('x-auth-token'),JWT_KEY);
-            const userExist = await mod_users.findOne({
-                where: {
-                    username: userData.username
-                }
-            });
+        else {
+            let userExist = null;
+            try {
+                const userData = jwt.verify(req.header('x-auth-token'),JWT_KEY);
+                userExist = await mod_users.findOne({
+                    where: {
+                        username: userData.username
+                    }
+                });
+            }
+            catch (err) {
+                return res.status(403).send({ message: "Jwt expired!" });
+            }
             
-        const user = db.DevUser.build({
-            username: username,
-            user_id: userExist.id
-        });
-        await user.save();
+            const user = db.DevUser.build({
+                username: username,
+                user_id: userExist.id
+            });
+            await user.save();
 
-        return res.status(200).send(user);
+            return res.status(200).send(user);
         }
     },
 
