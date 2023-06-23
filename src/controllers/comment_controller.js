@@ -109,6 +109,11 @@ const commentController = {
                         const filename = `${newComment.id}.${oldExt}`;
                         fs.renameSync(`./src/public/images/${req.file.filename}`, `./src/public/images/${filename}`);
 
+                        const host = req.get("host");
+
+                        newComment.body = `http://${host}/images/${filename}`;
+                        await newComment.save();
+
                         return res.status(201).send({
                             statusCode: 201,
                             message: "Success upload comment with image!",
