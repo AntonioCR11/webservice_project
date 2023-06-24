@@ -25,6 +25,9 @@ const generateWordCloud = async(req,res)=>{
             content_id : content_id
         }
     });
+    if(comments.length == 0){
+        return res.status(404).send({message : "There is no comment for this content yet!"})
+    }
     let commentConcat = "";
     for (let index = 0; index < comments.length; index++) {
         commentConcat += comments[index].dataValues.body +" ";
