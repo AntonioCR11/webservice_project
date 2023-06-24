@@ -268,7 +268,8 @@ const commentController = {
             "is_reaction": joi.number().required(),
         });
         const validateResult = validateSchema.validate(req.body);
-        if (validateResult.error) return res.status(422).send({
+        if (validateResult.error) 
+        return res.status(422).send({
             statusCode: 422,
             message: validateResult.error.message
         });
@@ -344,6 +345,10 @@ const commentController = {
                             // WARNING: If it is an image, make sure that the is_reaction is = 1,
                             //          or if you want to, you can set it by default to be 1 to indicate it is a picture
                             console.log(req.file);
+                            return res.status(404).send({
+                                statusCode: 404,
+                                message: "Not implemented yet!"
+                            });
                         }
                     }
                 }
